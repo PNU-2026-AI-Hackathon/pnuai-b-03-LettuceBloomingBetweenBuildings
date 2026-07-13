@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>미니팜 로그인</title>
+</head>
+<body>
+<h1>🔐 미니팜 로그인</h1>
+<hr/>
+
+<!-- 자바스크립트에서 제어할 수 있도록 id 속성 부여, action/method 제거 -->
+<form id="customLoginForm">
+    <!-- type과 id를 email로 변경 -->
+    <input type="email" id="email" placeholder="이메일 입력" required><br/>
+    <input type="password" id="password" placeholder="비밀번호 입력" required><br/>
+    <button type="submit">일반 로그인</button>
+</form>
+
+<br/>
+<a href="/joinForm">아직 회원이 아니신가요? (회원가입)</a>
+
+<hr/>
+<h3>소셜 로그인</h3>
+<a href="/oauth2/authorization/google">[ 구글로 로그인 ]</a> <br/>
+<a href="/oauth2/authorization/naver">[ 네이버로 로그인 ]</a> <br/>
+<a href="/oauth2/authorization/kakao">[ 카카오로 로그인 ]</a>
+
+<!-- 추가된 자바스크립트: 폼 데이터를 JSON으로 바꿔서 /api/login 으로 전송 -->
+<script>
+    document.getElementById('customLoginForm').addEventListener('submit', function(event) {
+        // 1. 폼이 새로고침되며 넘어가는 기본 동작을 막음
+        event.preventDefault();
+
+        // 2. 입력된 값 가져오기
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+
+        // 3. fetch API로 JSON 데이터 전송
+        fetch('/api/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json' // 백엔드에게 JSON을 보낸다고 알려줌
+            },
+            body: JSON.stringify({ // 데이터를 JSON 문자열로 변환
+                email: email,
+                password: password
+            })
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('로그인 실패: 아이디 또는 비밀번호를 확인해주세요.');
+                }
+                return response.json(); // 성공 시 백엔드가 보낸 JSON(토큰)을 파싱
+            })
+            .then(data => {
+                // 4. 성공 처리
+                alert('로그인 성공! JWT 토큰이 발급되었습니다.');
+
+                // 브라우저 저장소에 토큰을 살짝 저장해둠 (웹 테스트용)
+                localStorage.setItem('jwt_token', data.token);
+
+                // 메인 화면으로 리다이렉트
+                window.location.href = '/';
+            })
+            .catch(error => {
+                alert(error.message);
+            });
+    });
+</script>
+</body>
+</html>
