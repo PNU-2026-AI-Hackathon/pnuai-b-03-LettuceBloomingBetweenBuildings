@@ -23,10 +23,11 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
         String id = principalDetails.getUser().getId();
+        String username = principalDetails.getUser().getUsername();
         String role = principalDetails.getUser().getRole();
 
         // JWT 토큰 생성
-        String token = jwtUtil.createToken(id, role);
+        String token = jwtUtil.createToken(id, username, role);
         log.info("OAuth2 Login Success! Generated Token: {}", token);
 
         // 리다이렉트 주소 설정

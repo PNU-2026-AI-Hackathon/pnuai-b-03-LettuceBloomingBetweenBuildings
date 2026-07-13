@@ -47,10 +47,12 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
         // 토큰에서 유저 정보 추출하여 임시 User 객체 생성
         String id = jwtUtil.getId(token);
+        String username = jwtUtil.getUsername(token);
         String role = jwtUtil.getRole(token);
 
         User user = new User();
         user.setId(id);
+        user.setUsername(username);
         user.setRole(role);
 
         // SecurityContext에 인증 정보 저장 (이 요청에 한해 로그인된 것으로 처리)

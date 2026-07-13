@@ -23,9 +23,10 @@ public class JwtUtil {
     }
 
     // JWT 생성 (Generate Token)
-    public String createToken(String id, String role) {
+    public String createToken(String id, String username, String role) {
         return Jwts.builder()
                 .claim("id", id)
+                .claim("username", username)
                 .claim("role", role)
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + expirationTime))
@@ -36,6 +37,10 @@ public class JwtUtil {
     // JWT에서 id 추출
     public String getId(String token) {
         return getClaims(token).get("id", String.class);
+    }
+
+    public String getUsername(String token) {
+        return getClaims(token).get("username", String.class);
     }
 
     // JWT에서 role 추출

@@ -37,7 +37,7 @@ public class AuthController {
         }
 
         // 인증 성공 시 JWT 토큰 생성
-        String token = jwtUtil.createToken(user.getId(), user.getRole());
+        String token = jwtUtil.createToken(user.getId(), user.getUsername(), user.getRole());
 
         // 토큰 JSON 형태로 응답
         Map<String, String> response = new HashMap<>();
